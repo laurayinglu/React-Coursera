@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, CardBody, CardText, CardTitle, CardImg } from 'reactstrap';
+import { Card, CardBody, CardText, CardTitle, CardImg, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
   // get the dish from the props 
   function RenderDish({dish}) {
@@ -28,7 +29,7 @@ import { Card, CardBody, CardText, CardTitle, CardImg } from 'reactstrap';
       const commentsList = comments.map((com) => {
         return (
           <ul className="list-unstyled">
-            <li key={com.id}>
+            <li key={com.dishId}>
               <p>{com.comment}</p>
               <p>-- {com.author}, {new Intl.DateTimeFormat('en-US', {
                   year: 'numeric',
@@ -61,8 +62,21 @@ import { Card, CardBody, CardText, CardTitle, CardImg } from 'reactstrap';
       return (
         <div className="container">
           <div className="row">
+            <Breadcrumb>
+              <BreadcrumbItem><Link to='/home'>Home</Link></BreadcrumbItem>
+              <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
+              <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+            </Breadcrumb>
+
+            <div className="col-12">
+              <h3>{props.dish.name}</h3>
+              <hr />
+            </div>
+          </div>
+
+          <div className="row">
             <RenderDish dish={props.dish} />
-            <RenderComments comments={props.dish.comments} />
+            <RenderComments comments={props.comments} />
           </div>
         </div>
       );
