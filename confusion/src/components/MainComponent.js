@@ -9,7 +9,7 @@ import Contact from './ContactComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { actions } from 'react-redux-form';
-import { postComment, addComment, fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
+import { postComment, addComment, fetchDishes, fetchComments, fetchPromos, fetchLeaders, postFeedback } from '../redux/ActionCreators';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 //map the redux stores state into props
@@ -32,8 +32,8 @@ const mapDispatchToProps = dispatch => ({
   fetchComments: () => dispatch(fetchComments()),
   fetchPromos: () => dispatch(fetchPromos()),
   fetchLeaders: () => dispatch(fetchLeaders()),
-  postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment))
-
+  postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
+  postFeedback: (firstname, lastname, telnum, email, agree, contactType, message) => dispatch(postFeedback(firstname, lastname, telnum, email, agree, contactType, message))
 });
 
 class Main extends Component {
@@ -81,6 +81,16 @@ class Main extends Component {
       );
     };
 
+    const AboutUsPage = () => {
+      return(
+        <About 
+          leaders={this.props.leaders.leaders}
+          leadersLoading={this.props.leaders.isLoading}
+          leadersErrMess={this.props.leaders.errMess}
+          />
+      )
+    };
+
     return (
       <div>
         <Header />
@@ -88,10 +98,13 @@ class Main extends Component {
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
             <Switch>
                 <Route path='/home' component={HomePage} />
-                <Route exact path='/aboutus' component={() => <About leaders={this.props.leaders} />} />
+                <Route exact path='/aboutus' component={() => <AboutUsPage />} />
                 <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} />} />
                 <Route path='/menu/:dishId' component={DishWithId} />
-                <Route exact path='/contactus' component={() => <Contact resetFeedbackForm={this.props.resetFeedbackForm} /> } />
+                <Route exact path='/contactus' 
+                  component={() => <Contact 
+                                        resetFeedbackForm={this.props.resetFeedbackForm} 
+                                        postFeedback={this.props.postFeedback} /> } />
                 <Redirect to="/home" />
             </Switch>
           </CSSTransition>
